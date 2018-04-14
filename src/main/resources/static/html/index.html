@@ -1,0 +1,77 @@
+<html>
+  <head>    
+  <meta charset="UTF-8">
+  <title>My JSP 'index.jsp' starting page</title>
+</head>
+<script  src="/js/jquery.min.js"></script>
+<script  src="/js/jquery.easyui.min.js"></script>
+<link rel="stylesheet" href="/css/easyui.css" type="text/css"></link>
+<script  src="/js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/js/springsecurity.js"></script>
+
+  <body>
+    <div align="center">
+		<div class="easyui-panel" title="欢迎登录SCM系统" style="width:400px">
+			<div style="padding:10px 60px 20px 60px">
+				<div align="center" >
+				&nbsp<label id="tishi" hidden="hidden" style="color: red">密码或者用户名错误</label>
+				</div>
+				<form id="login" method="post">
+					<table cellpadding="5">
+						<tr>
+							<td><label style="width: 80px">用户名:</label></td>
+							<td><input id="name" class="easyui-textbox" type="text" name="username"
+								data-options="required:true"></input>
+							</td>
+						</tr>
+						<tr>
+							<td><label style="width: 80px">密码:</label></td>
+							<td><input id="password" class="easyui-textbox" type="password"
+								name="password" data-options="required:true"></input>
+							</td>
+						</tr>
+					</table>
+					<div style="text-align:center;padding:5px">
+					  <input type="submit"   value="submit"/>			
+				    </div>
+				</form>
+				<div style="text-align:center;padding:5px">
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">登录</a> 
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重置</a>
+				</div>
+			</div>
+		</div>
+	</div>
+  </body>
+ 
+ <script type="text/javascript">
+  function submitForm(){
+    var name=$("#name").val();
+    var pass=$("#password").val();
+    $.ajax({
+    	url:"/login",
+    	type:"post",
+    	data:{"username":name,"password":pass},
+        success:function(data){
+        	if(data.code=="200"){
+            	window.location.href=data.data;
+            }else{
+               $("#tishi").html(data.msg)
+               $("#tishi").show();
+            }
+        }
+    })
+  }
+    function clearForm(){
+          $("#login").form('reset');
+          $('#login').form('load',{name:'name'})
+    }
+    $(function(){
+         $("#password").textbox('textbox').bind("click",function(){
+        	    $("#tishi").html("密码或者用户名错误")
+                $("#tishi").hide();
+             });
+        /*  $('#login').form('load,',{name:'name'}) */
+    });
+  </script>
+</html>

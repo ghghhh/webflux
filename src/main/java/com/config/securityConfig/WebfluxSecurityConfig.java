@@ -1,12 +1,11 @@
 package com.config.securityConfig;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import com.system.service.impl.ReactiveUserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 /**
@@ -16,20 +15,24 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class WebfluxSecurityConfig {
 
     @Bean
-    public MapReactiveUserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("user")
-                .roles("USER")
-                .build();
-        return new MapReactiveUserDetailsService(user);
+    public ReactiveUserDetailsService userDetailsService() {
+
+        return new ReactiveUserDetailsServiceImpl();
     }
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http){
-        http.authorizeExchange().anyExchange()
-                .permitAll()
+        http.authorizeExchange().pathMatchers("/*").authenticated()
                 .and().httpBasic().and().formLogin();
         return http.build();
 
+    }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    public static void main(String[] args) {
+        BCryptPasswordEncoder en=new BCryptPasswordEncoder();
+        System.out.println(en.encode("cs"));
     }
 }

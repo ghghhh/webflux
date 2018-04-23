@@ -1,0 +1,58 @@
+8<html>
+  <head>
+    <title>login page</title>
+    <meta charset="UTF-8">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+</head>
+
+<script  src="/js/jquery.min.js"></script>
+<script  src="/js/jquery.easyui.min.js"></script>
+<link rel="stylesheet" href="../css/easyui.css" type="text/css"></link>
+<script  src="/js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/js/springsecurity.js"></script>
+<body class="easyui-layout">
+	<div data-options="region:'north',title:'North Title',split:true"
+		style="height:100px;"></div>
+
+	<div data-options="region:'west',title:'West',split:true"
+		style="width:200px;">
+		<ul id="tt" class="easyui-tree" data-options="url:'../menu/load'"></ul>
+	</div>
+	<div data-options="region:'center',title:'center title'"
+		style="padding:5px;background:#eee;">
+		<div id="tab" class="easyui-tabs" fit="true">
+			<div title="Tab1" style="padding:20px;">tab1</div>
+		</div>
+
+	</div>
+</body>
+<script>
+	$('#tt').tree({
+		onClick : function(node) {
+			if (node.menuType == "true") {
+               if($("#tab").tabs('getTab',node.text)==null){               
+				$("#tab").tabs('add', {
+					title : node.text,
+					closable : true,
+					content : "<iframe src='"+node.menuUrl+"'height='100%'width='100%' frameborder=0/>"
+				    //href:path+node.menuUrl
+				});
+				}else{
+				$("#tab").tabs('select',node.text);
+				}
+			}else{
+			    if(node.state=="closed"){
+			        $('#tt').tree('expand',node.target);
+			     }else{
+			        $('#tt').tree('collapse',node.target);
+			       }
+			}
+			
+		}
+	});
+</script>
+</html>

@@ -14,7 +14,6 @@
     </Appenders>
     <Loggers>
        
-        <logger name="org.springframework.boot.actuate" level="debug"/>
         <logger name="com" level="debug"/>
         <logger name="org.apache.ibatis" level="debug"/>
         <!-- <logger name="org.springframework" level="debug"/> -->

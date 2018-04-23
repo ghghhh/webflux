@@ -21,8 +21,11 @@ public class WebfluxSecurityConfig {
     }
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http){
-        http.authorizeExchange().pathMatchers("/*").authenticated()
-                .and().httpBasic().and().formLogin();
+        http.authorizeExchange().pathMatchers("/html/**").permitAll().
+                pathMatchers("/js/**").permitAll().
+                pathMatchers("/css/**").permitAll().
+                anyExchange().authenticated().and().csrf().disable()
+                .formLogin();
         return http.build();
 
     }
@@ -33,6 +36,9 @@ public class WebfluxSecurityConfig {
 
     public static void main(String[] args) {
         BCryptPasswordEncoder en=new BCryptPasswordEncoder();
-        System.out.println(en.encode("cs"));
+        String p=en.encode("cs");
+        boolean b=en.matches("cs",p);
+        System.out.println(p);
+        System.out.println(p.length());
     }
 }

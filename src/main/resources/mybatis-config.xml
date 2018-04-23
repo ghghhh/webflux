@@ -6,11 +6,11 @@
 		<setting name="mapUnderscoreToCamelCase" value="false"/>
 	</settings>
 
-	<plugins>
-		<!-- com.github.pagehelper为PageHelper类所在包名 -->
-		<plugin interceptor="com.github.pagehelper.PageInterceptor">
-			<!-- 使用下面的方式配置参数，后面会有所有的参数介绍 -->
-		</plugin>
-	</plugins>
+	<!--<plugins>
+		&lt;!&ndash; com.github.pagehelper为PageHelper类所在包名 &ndash;&gt;
+		&lt;!&ndash;<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			&lt;!&ndash; 使用下面的方式配置参数，后面会有所有的参数介绍 &ndash;&gt;
+		</plugin>&ndash;&gt;
+	</plugins>-->
 </configuration>
 

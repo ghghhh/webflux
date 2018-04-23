@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface UserDao {
-    @Select("select user_name as username , user_password as password from sys_user where user_name=#{username}")
+    @Select("select user_name as username , password as password from sys_user where user_name=#{username}")
     SysUser findByUsername(String username);
 }

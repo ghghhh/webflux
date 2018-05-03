@@ -16,7 +16,7 @@
 				<div align="center" >
 				&nbsp<label id="tishi" hidden="hidden" style="color: red">密码或者用户名错误</label>
 				</div>
-				<form id="login" method="get">
+				<form id="login" method="post" action="/login">
 					<table cellpadding="5">
 						<tr>
 							<td><label style="width: 80px">用户名:</label></td>
@@ -54,7 +54,11 @@
     	data:{"username":name,"password":pass},
         success:function(data){
         	if(data.code=="200"){
-            	window.location.href=data.data;
+        		if(data.date===undefined){
+        			window.location.href="/html/main.html"
+        		}else{
+        			window.location.href=data.data;
+        		}
             }else{
                $("#tishi").html(data.msg)
                $("#tishi").show();

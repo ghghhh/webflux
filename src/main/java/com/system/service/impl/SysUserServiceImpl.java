@@ -19,43 +19,53 @@ import java.time.Duration;
  *
  */
 @Service
-public class SysUserServiceImpl implements SysUserService{
+public class SysUserServiceImpl implements SysUserService {
 
-    private Logger logger=LogManager.getLogger(SysUserServiceImpl.class);
+    private Logger logger = LogManager.getLogger(SysUserServiceImpl.class);
     @Autowired
     private UserDao userDao;
 
     @Autowired
-    private ReactiveRedisTemplate<String,String> redisTemplate;
+    private ReactiveRedisTemplate<String, String> redisTemplate;
 
     @Autowired
     private ObjectMapper mapper;
-    private final static String USER="USER_";
+    private final static String USER = "USER_";
     public final static String DEFATLT = "#";
+    private SysUser user;
+
     @Override
     public Mono<SysUser> findByUsername(String username) {
-        return redisTemplate.opsForValue().get(USER+username).flatMap(s->{
-            SysUser user=null;
-            try {
-                user=mapper.readValue(s,SysUser.class);
-            } catch (IOException e) {
-            }
-            return Mono.just(user);
-        }).switchIfEmpty(
-                Mono.defer(()->{
-                    SysUser user=userDao.findByUsername(username);
-                    if(user==null){
-                        logger.warn("找不到用户:{}",username);
-                        return redisTemplate.opsForValue().set(USER+username,DEFATLT, Duration.ofHours(1)).then(Mono.empty());
-                    }else{
-                        logger.info("找到用户:{}",username);
+        return redisTemplate.opsForValue().get(USER + username).switchIfEmpty(
+                Mono.defer(() -> {
+                    SysUser user = userDao.findByUsername(username);
+                    if (user == null) {
+                        logger.warn("找不到用户:{}", username);
+                        return redisTemplate.opsForValue().set(USER + username, DEFATLT, Duration.ofHours(1)).then(Mono.empty());
+                    } else {
+                        logger.info("找到用户:{}", username);
+                        String s = null;
                         try {
-                            redisTemplate.opsForValue().set(USER+username,mapper.writeValueAsString(user),Duration.ofHours(1)).subscribe();
+                            s = mapper.writeValueAsString(user);
+                            redisTemplate.opsForValue().set(USER + username, s, Duration.ofHours(1)).subscribe();
                         } catch (JsonProcessingException e) {
+                            logger.error("{}转为json出错,e{}",user,e);
+                            s=DEFATLT;
                         }
-                        return Mono.just(user);
+                        return Mono.just(s);
                     }
                 })
-            );
+        ).flatMap(s -> {
+            SysUser user = null;
+            if (s.equals(DEFATLT)) {
+                return Mono.empty();
+            }
+            try {
+                user = mapper.readValue(s, SysUser.class);
+            } catch (IOException e) {
+
+            }
+            return Mono.justOrEmpty(user);
+        });
     }
 }
